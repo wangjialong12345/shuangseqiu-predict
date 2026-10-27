@@ -56,6 +56,25 @@ const ticketEvaluation = (
   getEvaluation(snapshot.id)?.results[ticketFlatIndex(ticket)];
 const prizeLabel = (result: CombinationEvaluation | undefined) =>
   result?.prizeTier ?? result?.label ?? "等待首个后续开奖";
+
+const algorithmLabel = (algorithmId: PredictionSnapshot["algorithmId"]) => {
+  const labels: Record<PredictionSnapshot["algorithmId"], string> = {
+    "uniform-baseline": "均匀组合基准",
+    "bayesian-static": "贝叶斯静态偏差",
+    "time-decay": "时间衰减",
+    "pair-dependence": "组合依赖",
+    "scored-ensemble": "滚动评分集成",
+    "coverage-optimizer": "三注覆盖优化",
+  };
+  return labels[algorithmId];
+};
+
+const candidateLabel = (snapshot: PredictionSnapshot) =>
+  snapshot.candidateTier === "validated"
+    ? "回测通过覆盖快照"
+    : snapshot.candidateTier === "baseline"
+      ? "均匀基准覆盖快照"
+      : "研究覆盖快照";
 </script>
 
 <template>
@@ -113,13 +132,9 @@ const prizeLabel = (result: CombinationEvaluation | undefined) =>
       >
         <div class="snapshot-head">
           <div>
-            <strong>{{
-              snapshot.candidateTier === "validated"
-                ? "回测通过覆盖快照"
-                : snapshot.candidateTier === "baseline"
-                  ? "均匀基准覆盖快照"
-                  : "研究覆盖快照"
-            }}</strong
+            <strong
+              >{{ algorithmLabel(snapshot.algorithmId) }} ·
+              {{ candidateLabel(snapshot) }}</strong
             ><span
               >数据截止：{{ snapshot.sourceLatestIssue }} ·
               {{ snapshot.sourceLatestDate }} ·
