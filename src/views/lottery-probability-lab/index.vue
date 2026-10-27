@@ -52,6 +52,8 @@ onBeforeUnmount(() => lab.dispose());
         <AlgorithmWorkspace
           :algorithm="activeAlgorithm"
           :total-draws="lab.drawData.state.summary.totalDraws"
+          :latest-issue="lab.drawData.state.summary.latestDraw?.issue ?? null"
+          :latest-date="lab.drawData.state.summary.latestDraw?.date ?? null"
           :current-batch="lab.prediction.state.currentBatch"
           :current-audit="lab.prediction.state.currentAudit"
           :backtest="lab.prediction.state.backtest"

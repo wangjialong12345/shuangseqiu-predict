@@ -15,6 +15,8 @@ import type {
 const props = defineProps<{
   algorithm: AlgorithmDefinition;
   totalDraws: number;
+  latestIssue: string | null;
+  latestDate: string | null;
   currentBatch: PredictionBatch | null;
   currentAudit: AuditReport | null;
   backtest: BacktestReport | null;
@@ -27,6 +29,13 @@ const localBacktestRunning = ref(false);
 const isAudit = computed(() => props.algorithm.kind === "audit");
 const isCurrentBatch = computed(
   () => props.currentBatch?.algorithmId === props.algorithm.id,
+);
+const isBatchUsingLatestData = computed(() =>
+  Boolean(
+    props.currentBatch &&
+      props.currentBatch.sourceLatestIssue === props.latestIssue &&
+      props.currentBatch.sourceLatestDate === props.latestDate,
+  ),
 );
 const currentMetric = computed<AlgorithmBacktestMetric | null>(() => {
   if (props.algorithm.id === "randomness-audit") return null;
@@ -366,6 +375,23 @@ const groupTickets = (group: PrizeCoverageGroup) => [
             </div>
           </article>
         </div>
+        <el-alert
+          class="next-batch-alert"
+          :type="isBatchUsingLatestData ? 'info' : 'success'"
+          :closable="false"
+          show-icon
+          :title="
+            isBatchUsingLatestData
+              ? `当前批次已使用最新官方数据（第 ${latestIssue ?? '—'} 期 · ${latestDate ?? '—'}）。它用于预测下一次官方开奖；再次生成只会使用相同数据截止期创建不同固定种子的独立快照，不代表获得新信息。`
+              : `官方数据已更新到第 ${latestIssue ?? '—'} 期 · ${latestDate ?? '—'}，当前快照仍截至第 ${currentBatch.sourceLatestIssue ?? '—'} 期。现在可生成下一次官方开奖的五大组。`
+          "
+        />
+        <div class="next-batch-actions">
+          <el-button type="primary" @click="generate"
+            >基于当前数据生成新一批五大组</el-button
+          >
+          <span>旧快照会保留在预测账本中，并在开奖后继续参与对照。</span>
+        </div>
         <p class="saved-note">
           本批次已保存为不可变 5 组 / 15
           注预测快照；后续首个官方开奖会自动逐注对照并标记 `6+1 / 6+0 / 5+1`。
@@ -472,8 +498,22 @@ const groupTickets = (group: PrizeCoverageGroup) => [
   font-size: 17px;
 }
 .validation-alert,
-.candidate-alert {
+.candidate-alert,
+.next-batch-alert {
   margin-top: 11px;
+}
+.next-batch-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px 0;
+}
+.next-batch-actions span {
+  color: var(--app-muted-color);
+  font-size: 10px;
+  line-height: 1.5;
 }
 .metric-grid {
   display: grid;
@@ -762,6 +802,10 @@ const groupTickets = (group: PrizeCoverageGroup) => [
     gap: 4px;
   }
   .group-title {
+    flex-direction: column;
+  }
+  .next-batch-actions {
+    align-items: flex-start;
     flex-direction: column;
   }
 }

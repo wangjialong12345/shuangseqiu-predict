@@ -95,7 +95,7 @@ type BackupError =
 | 页面生命周期 | `src/views/lottery-probability-lab/index.vue` | `state`、各单元状态 | `onMounted` / `onBeforeUnmount` / 页面重新可见 | `initialize()` / `dispose()` / 补拉与重排定时器 |
 | 顶部状态栏 | `components/LotteryHeader.vue` | `drawData.state.summary`、`drawData.state.officialSync`、`state.automaticSync`、`review.state.statistics` | 自动状态展示、CSV 导入、生成、导出备份、恢复备份 | 自动同步由生命周期驱动；`importDrawCsv()`、`generatePrediction()`、`exportBackup()`、`importBackup()` 仅响应用户操作 |
 | 数据概览 | `components/DataOverviewPanel.vue` | `drawData.state` | 无副作用 | 只读呈现开奖数据、频率与录入提示 |
-| 算法工作区 | `components/AlgorithmWorkspace.vue` | `prediction.state`、`drawData.state.summary` | 请求滚动回测、请求计算 | `runRollingBacktest()` / `generatePrediction()`；呈现 5 个覆盖大组和证明过程 |
+| 算法工作区 | `components/AlgorithmWorkspace.vue` | `prediction.state`、`drawData.state.summary` | 请求滚动回测、请求计算、已有快照后的连续生成 | `runRollingBacktest()` / `generatePrediction()`；无论当前算法是否已有批次都保留生成入口，并呈现 5 个覆盖大组和证明过程 |
 | 预测与复盘账本 | `components/PredictionLedgerPanel.vue` | `prediction.state.currentBatch`、`review.state` | 无副作用 | 只读呈现 5 组覆盖快照、每注角色、奖级命中和证明过程摘要 |
 | 右侧算法栏 | `components/AlgorithmSidebar.vue` | `state.activeAlgorithmId`、`prediction.state.algorithms` | `select` | `selectAlgorithm()` |
 
@@ -109,7 +109,7 @@ type BackupError =
 | 开奖日 21:30 自动补拉 | 视图模块以北京时间计算下一个周二、四、日 21:30；触发后请求官方第 1 页最新记录，新增后执行对照。若当日开奖结果尚未出现则每 5 分钟重试至 22:30；页面再次可见时补拉并重新排定。 | 页面关闭时不运行定时器；下一次打开页面补拉。所有请求失败仅提示状态，不改变已有数据。 |
 | 导出或恢复备份 | 视图模块从三个单元读取完整归档，导出版本化 JSON；恢复时先在内存完整校验，成功后以替换语义提交所有 IndexedDB 记录并重新对照。 | 解析、校验或提交失败时，IndexedDB 中的既有数据不得被部分改写。 |
 | 运行滚动回测 | 候选单元以冻结的最近 160 期训练窗口评估最近至多 180 个预测期，保存当前内存回测报告并为评分集成提供权重。 | 数据不足或计算失败时保留最后一次已完成报告，返回可读研究状态。 |
-| 生成五组覆盖候选 | 候选单元先取得当前回测报告，再按当前算法实际计算 5 个一等奖锚点，并为每组派生 1 个同红备用蓝票和 1 个同主蓝五红替换票；成功后视图模块把 15 注、覆盖角色、证明过程、候选身份和回测摘要交给复盘单元保存为不可变快照。 | 审计算法或计算失败时不得创建快照。 |
+| 生成五组覆盖候选 | 候选单元先取得当前回测报告，再按当前算法实际计算 5 个一等奖锚点，并为每组派生 1 个同红备用蓝票和 1 个同主蓝五红替换票；成功后视图模块把 15 注、覆盖角色、证明过程、候选身份和回测摘要交给复盘单元保存为不可变快照。已有快照时仍允许生成新批次。 | 审计算法或计算失败时不得创建快照；同一数据截止期重复生成必须在页面中说明仅改变独立随机种子。 |
 | 选择算法 | 根级状态更新；候选单元从按算法索引的最新已保存批次恢复当前工作区，不重新计算、不写入快照。 | 未知算法标识被忽略并保留当前选择；审计算法清空候选工作区。 |
 
 ## 路由、权限与生命周期
