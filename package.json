@@ -1,0 +1,29 @@
+{
+  "name": "shuangseqiu-probability-lab",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "check-ts": "vue-tsc --noEmit",
+    "format": "prettier --write package.json index.html vite.config.ts tsconfig.json src",
+    "format:check": "prettier --check package.json index.html vite.config.ts tsconfig.json src"
+  },
+  "dependencies": {
+    "element-plus": "2.9.2",
+    "vue": "3.5.13"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.5",
+    "@vitejs/plugin-vue": "5.2.1",
+    "less": "^4.2.1",
+    "prettier": "3.4.2",
+    "typescript": "5.7.3",
+    "vite": "6.0.7",
+    "vue-tsc": "2.2.0"
+  }
+}

@@ -1,0 +1,43 @@
+@import "./var.css";
+@import "element-plus/theme-chalk/dark/css-vars.css";
+
+html,
+body,
+#app {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  color: var(--app-text-color);
+  background: var(--app-content-bg-color);
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    Arial,
+    sans-serif;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.el-popup-parent--hidden {
+  width: 100% !important;
+}
+
+.el-card {
+  border-color: var(--app-border-color);
+}
+
+.el-empty {
+  padding: 28px 0;
+}

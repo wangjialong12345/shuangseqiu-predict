@@ -1,0 +1,26 @@
+:root {
+  --app-content-bg-color: #f4f7fb;
+  --app-surface-color: #ffffff;
+  --app-surface-soft-color: #f8faff;
+  --app-border-color: #e7ecf4;
+  --app-text-color: #17233d;
+  --app-muted-color: #6b7890;
+  --app-brand-color: #2157c7;
+  --app-brand-deep: #123d96;
+  --app-brand-soft: #edf3ff;
+  --app-danger-color: #e84a5f;
+  --app-blue-color: #2f72dd;
+  --app-success-color: #19a77b;
+  --app-sidebar-width: 268px;
+  --app-content-padding: 24px;
+  --app-radius-large: 16px;
+  --app-radius-medium: 12px;
+  --app-shadow-card: 0 10px 30px rgb(19 48 97 / 6%);
+  --transition-time-02: 0.2s;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
